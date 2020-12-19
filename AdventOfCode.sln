@@ -37,7 +37,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ticket Translation", "Ticke
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conway Cubes", "Conway Cubes\Conway Cubes.csproj", "{BF35F661-B6B2-4767-B223-0DC94F0619E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Operation Order", "Operation Order\Operation Order.csproj", "{3DE98F32-2BA7-4B3D-A3BB-171F716E818A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Operation Order", "Operation Order\Operation Order.csproj", "{3DE98F32-2BA7-4B3D-A3BB-171F716E818A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monster Messages", "Monster Messages\Monster Messages.csproj", "{1CA2B7C5-038A-41C5-A3A4-78601DC83039}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +119,10 @@ Global
 		{3DE98F32-2BA7-4B3D-A3BB-171F716E818A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DE98F32-2BA7-4B3D-A3BB-171F716E818A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DE98F32-2BA7-4B3D-A3BB-171F716E818A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CA2B7C5-038A-41C5-A3A4-78601DC83039}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CA2B7C5-038A-41C5-A3A4-78601DC83039}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CA2B7C5-038A-41C5-A3A4-78601DC83039}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CA2B7C5-038A-41C5-A3A4-78601DC83039}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
