@@ -11,7 +11,8 @@ namespace Monster_Messages
         static void Main(string[] args)
         {
             var inputList = new List<List<string>>();
-            StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Monster Messages\TextFile5.txt");
+            StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Monster Messages\TextFile6.txt");
+            //StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Monster Messages\TextFile5.txt");
             //StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Monster Messages\TextFile4.txt");
             //StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Monster Messages\TextFile3.txt");
             //StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Monster Messages\TextFile2.txt");
@@ -31,6 +32,14 @@ namespace Monster_Messages
                 }
             }
             inputList.Add(subList);
+            
+
+
+            SolveWithRules(inputList);
+        }
+
+        private static void SolveWithRules(List<List<string>> inputList)
+        {
 
             //make rules
             var rules = new List<Rule>();
@@ -111,7 +120,6 @@ namespace Monster_Messages
         }
     }
 
-
     public class Rule
     {
         public int Num { get; private set; }
@@ -128,10 +136,20 @@ namespace Monster_Messages
 
         public bool Match(string sIn, out string sOut)
         {
+            int depth = 30 - sIn.Length;
+            string dent = "";
+            for (int i = 0; i < depth; i++)
+            {
+                dent += " ";
+            }
             string sA = (string)sIn.Clone();
             string sB = (string)sIn.Clone();
             sOut = sIn;
             bool match = false;
+            if (sIn.Length == 0)
+            {
+                return match;
+            }
 
             if (Letter != null)
             {
