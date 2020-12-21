@@ -29,12 +29,22 @@ namespace Jurassic_Jigsaw
             inputList.Add(tempList);
 
             List<Tile> tiles = ResetTiles(inputList);
-
+            var superlijst = new List<Tile[,]>();
             //now try to start with each tile in each orientation and snake your way through all the tiles
             int gridSize = Convert.ToInt32(Math.Sqrt(tiles.Count));
             Tile[,] grid = new Tile[gridSize, gridSize];
-            Console.WriteLine(Solve(grid, tiles, 0, 0));
+            Console.WriteLine(Solve(grid, tiles, 0, 0, ref superlijst));
+            Console.WriteLine(superlijst.Count);
+
+            //var turbolijst = new List<List<Tile[,]>>();
+            //Tile[,] grid = new Tile[2, 2];
+            //Solve(grid, tiles, 0, 0, ref superlijst);
+            //Console.WriteLine(superlijst.Count);
         }
+
+        //TODO: Recombine tiles into image
+        //TODO: Find monsters
+        //TODO: Count waves
 
         public static List<Tile> ResetTiles(List<List<string>> inputList)
         {
@@ -45,6 +55,48 @@ namespace Jurassic_Jigsaw
             }
 
             return tiles;
+        }
+
+        public static bool Solve(Tile[,] grid, List<Tile> tiles, int y, int x, ref List<Tile[,]> superlijst)
+        {
+            int maxX = grid.GetUpperBound(1);
+            int maxY = grid.GetUpperBound(0);
+            if (y > maxY || x > maxX)
+            {
+                superlijst.Add(grid);
+                Console.WriteLine("+++++++++++++++++++++");
+                DrawGrid(grid);
+                Console.WriteLine(grid[0, 0].ID * grid[0, maxX].ID * grid[maxY, 0].ID * grid[maxY, maxX].ID);
+                return false;
+            }
+
+            //try to place each tile
+            foreach (var tile in tiles)
+            {
+                //for each of its 8 orientations
+                for (int i = 0; i < 8; i++)
+                {
+                    var gridCopy = (Tile[,])grid.Clone();
+                    if (CheckTile(tile, gridCopy, y, x))
+                    {
+                        gridCopy[y, x] = tile;
+                        //the tile has been placed so do recursion
+                        var tileCopy = new List<Tile>(tiles);
+                        tileCopy.Remove(tile);
+                        int newX = x + 1;
+                        int newY = y;
+                        if (newX > maxX)
+                        {
+                            newY++;
+                            newX = 0;
+                        }
+                        bool ret = Solve(gridCopy, tileCopy, newY, newX, ref superlijst);
+                    }
+                    //Console.WriteLine($"not: {tile.ID}.{tile.Orientation}");
+                    tile.NextOrientation();
+                }
+            }
+            return false;
         }
 
         public static bool Solve(Tile[,] grid, List<Tile> tiles, int y, int x)
@@ -108,7 +160,8 @@ namespace Jurassic_Jigsaw
                 for (int x = 0; x <= maxx; x++)
                 {
                     long id = grid[y, x] == null ? 0 : grid[y, x].ID;
-                    sb.Append($"{id,4} ");
+                    long or = grid[y, x] == null ? 0 : grid[y, x].Orientation;
+                    sb.Append($"{id,4}.{or} ");
                 }
                 Console.WriteLine(sb.ToString());
             }
@@ -128,72 +181,59 @@ namespace Jurassic_Jigsaw
         {
             int maxX = grid.GetUpperBound(1);
             int maxY = grid.GetUpperBound(0);
-            for (int i = 0; i < 8; i++)
+            //Console.WriteLine($"trying to fit {t.ID}.{t.Orientation}");
+            bool fits = true;
+            //left
+            if (x > 0)
             {
-                //Console.WriteLine($"trying to fit {t.ID}.{t.Orientation}");
-                bool fits = true;
-                //left
-                if (x > 0)
+                Tile neighbour = grid[y, x - 1];
+                if (neighbour != null)
                 {
-                    Tile neighbour = grid[y, x - 1];
-                    if (neighbour != null)
+                    if (neighbour.Right != t.Left)
                     {
-                        if (neighbour.Right != t.Left)
-                        {
-                            fits = false;
-                        }
+                        fits = false;
                     }
-                }
-                //right
-                if (x < maxX)
-                {
-                    Tile neighbour = grid[y, x + 1];
-                    if (neighbour != null)
-                    {
-                        if (neighbour.Left != t.Right)
-                        {
-                            fits = false;
-                        }
-                    }
-                }
-                //top
-                if (y > 0)
-                {
-                    Tile neighbour = grid[y - 1, x];
-                    if (neighbour != null)
-                    {
-                        if (neighbour.Bottom != t.Top)
-                        {
-                            fits = false;
-                        }
-                    }
-                }
-                //bottom
-                if (y < maxY)
-                {
-                    Tile neighbour = grid[y + 1, x];
-                    if (neighbour != null)
-                    {
-                        if (neighbour.Top != t.Bottom)
-                        {
-                            fits = false;
-                        }
-                    }
-                }
-                if (!fits)
-                {
-                    t.NextOrientation();
-                }
-                else
-                {
-                    grid[y, x] = t;
-                    return true;
                 }
             }
-            return false;
+            //right
+            if (x < maxX)
+            {
+                Tile neighbour = grid[y, x + 1];
+                if (neighbour != null)
+                {
+                    if (neighbour.Left != t.Right)
+                    {
+                        fits = false;
+                    }
+                }
+            }
+            //top
+            if (y > 0)
+            {
+                Tile neighbour = grid[y - 1, x];
+                if (neighbour != null)
+                {
+                    if (neighbour.Bottom != t.Top)
+                    {
+                        fits = false;
+                    }
+                }
+            }
+            //bottom
+            if (y < maxY)
+            {
+                Tile neighbour = grid[y + 1, x];
+                if (neighbour != null)
+                {
+                    if (neighbour.Top != t.Bottom)
+                    {
+                        fits = false;
+                    }
+                }
+            }
+
+            return fits;
         }
-
-
     }
 
     public enum FlipAxis
@@ -209,8 +249,10 @@ namespace Jurassic_Jigsaw
         public int Right { get; set; }
         public int Bottom { get; set; }
         public long ID { get; set; }
-        private int Size { get; set; }
         public int Orientation { get; set; }
+
+        private int Size { get; set; }
+        private char[][] Image { get; set; }
 
         public Tile(List<string> l)
         {
@@ -218,6 +260,13 @@ namespace Jurassic_Jigsaw
             //get id
             ID = int.Parse(l[0].Split(' ')[1].Trim(':'));
             l.RemoveAt(0);
+
+            //make Image
+            Image = new char[l.Count][];
+            for (int i = 0; i < l.Count; i++)
+            {
+                Image[i] = l[i].ToCharArray();
+            }
 
             //create all side strings from left to right and top to bottom
             int y = l.Count; //highest y index exclusive
@@ -324,6 +373,16 @@ namespace Jurassic_Jigsaw
             }
         }
 
+        private void RotateImageCCW()
+        {
+            //TODO: Make CCW Image rotation
+        }
+
+        private void FlipImageHorizontally()
+        {
+            //TODO: Make horizontal Image flip
+        }
+
         private int TileSideToInt(string side)
         {
             int ret = 0;
@@ -357,5 +416,6 @@ namespace Jurassic_Jigsaw
         {
             return $"ID: {ID} | {Top,4} {Right,4} {Bottom,4} {Left,4} | {Orientation}";
         }
+
     }
 }
