@@ -10,8 +10,8 @@ namespace Crab_Combat
         static void Main(string[] args)
         {
             var inputList = new List<string>();
-            StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Crab Combat\TextFile1.txt");
-            //StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Crab Combat\TextFile2.txt");
+            //StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Crab Combat\TextFile1.txt");
+            StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Crab Combat\TextFile2.txt");
             //StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Crab Combat\TextFile3.txt");
             string line = string.Empty;
             while ((line = sr.ReadLine()) != null)
@@ -41,8 +41,11 @@ namespace Crab_Combat
             Console.WriteLine(p2.Count);
 
             //PlayNormalGame(p1, p2);
-
+            var start = DateTime.Now;
             PlayRecursiveGame(p1, p2, 1);
+            var end = DateTime.Now;
+            Console.WriteLine($"took: {(end-start).TotalMilliseconds}");
+
 
             var Winner = p1.Count > p2.Count ? p1 : p2;
             int multiplier = Winner.Count;

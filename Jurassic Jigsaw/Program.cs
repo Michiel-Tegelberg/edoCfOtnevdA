@@ -10,7 +10,7 @@ namespace Jurassic_Jigsaw
         static void Main(string[] args)
         {
             var inputList = new List<List<string>>();
-            //StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Jurassic Jigsaw\TextFile2.txt");
+            //StreamReader sr = new StreamReader(@"c:\users\eiedu\source\repos\adventofcode\jurassic jigsaw\textfile2.txt");
             StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Jurassic Jigsaw\TextFile1.txt");
             string line = string.Empty;
             var tempList = new List<string>();
@@ -42,9 +42,100 @@ namespace Jurassic_Jigsaw
             //Console.WriteLine(superlijst.Count);
         }
 
-        //TODO: Recombine tiles into image
-        //TODO: Find monsters
-        //TODO: Count waves
+        public static void DrawGridImage(Tile[,] grid)
+        {
+            int yLength = grid.GetLength(0);
+            int xLength = grid.GetLength(1);
+            int BlockSize = grid[0, 0].Size-2;
+            var image = new char[BlockSize * yLength][];
+            //TODO: Recombine tiles into image
+            for (int y = 0; y < yLength; y++)
+            {
+                for (int blockY = 1; blockY < BlockSize+1; blockY++)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    for (int x = 0; x < xLength; x++)
+                    {
+                        sb.Append(grid[y, x].Image[blockY][1..9]);
+                    }
+                    image[y * BlockSize + blockY-1] = sb.ToString().ToCharArray();
+                }
+            }
+
+            // TODO: Find monsters
+            int monsters = 0;
+            var kernel = new string[3];
+            kernel[0] = "..................#.";
+            kernel[1] = "#....##....##....###";
+            kernel[2] = ".#..#..#..#..#..#...";
+            int kHeight = 3;
+            int kLength = 20;
+
+            int imageSizeX = image[0].Length;
+            int imageSizeY = image.Length;
+            //for each possible position on the grid, try the kernel
+            for (int y = 0; y < imageSizeY - kHeight; y++)
+            {
+                for (int x = 0; x < imageSizeX - kLength; x++)
+                {
+                    bool match = true;
+                    for (int kernelY = 0; kernelY < kHeight; kernelY++)
+                    {
+                        if (!match)
+                        {
+                            break;
+                        }
+                        for (int kernelX = 0; kernelX < kLength; kernelX++)
+                        {
+                            if (kernel[kernelY][kernelX] == '#')
+                            {
+                                if (image[y + kernelY][x + kernelX] != '#')
+                                {
+                                    match = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (match)
+                    {
+                        monsters++;
+                        for (int kernelY = 0; kernelY < kHeight; kernelY++)
+                        {
+                            for (int kernelX = 0; kernelX < kLength; kernelX++)
+                            {
+                                if (kernel[kernelY][kernelX] == '#')
+                                {
+                                    image[y + kernelY][x + kernelX] = '0';
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            //TODO: Count waves
+            int waves = 0;
+            foreach (var line in image)
+            {
+                foreach (var c in line)
+                {
+                    if (c == '#')
+                    {
+                        waves++;
+                    }
+                }
+            }
+
+
+            foreach (var item in image)
+            {
+                Console.WriteLine(CharArrayToString(item));
+            }
+            Console.WriteLine($"waves: {waves}; monsters: {monsters}");
+        }
+
 
         public static List<Tile> ResetTiles(List<List<string>> inputList)
         {
@@ -66,6 +157,13 @@ namespace Jurassic_Jigsaw
                 superlijst.Add(grid);
                 Console.WriteLine("+++++++++++++++++++++");
                 DrawGrid(grid);
+                Console.WriteLine("\n");
+
+
+                DrawGridImage(grid);
+
+
+
                 Console.WriteLine(grid[0, 0].ID * grid[0, maxX].ID * grid[maxY, 0].ID * grid[maxY, maxX].ID);
                 return false;
             }
@@ -97,6 +195,16 @@ namespace Jurassic_Jigsaw
                 }
             }
             return false;
+        }
+
+        public static string CharArrayToString(char[] ca)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in ca)
+            {
+                sb.Append(item);
+            }
+            return sb.ToString();
         }
 
         public static bool Solve(Tile[,] grid, List<Tile> tiles, int y, int x)
@@ -244,15 +352,14 @@ namespace Jurassic_Jigsaw
 
     public class Tile
     {
-        public int Left { get; set; }
-        public int Top { get; set; }
-        public int Right { get; set; }
-        public int Bottom { get; set; }
-        public long ID { get; set; }
-        public int Orientation { get; set; }
-
-        private int Size { get; set; }
-        private char[][] Image { get; set; }
+        public int Left { get; private set; }
+        public int Top { get; private set; }
+        public int Right { get; private set; }
+        public int Bottom { get; private set; }
+        public long ID { get; private set; }
+        public int Orientation { get; private set; }
+        public int Size { get; private set; }
+        public string[] Image { get; private set; }
 
         public Tile(List<string> l)
         {
@@ -262,10 +369,10 @@ namespace Jurassic_Jigsaw
             l.RemoveAt(0);
 
             //make Image
-            Image = new char[l.Count][];
+            Image = new string[l.Count];
             for (int i = 0; i < l.Count; i++)
             {
-                Image[i] = l[i].ToCharArray();
+                Image[i] = l[i];
             }
 
             //create all side strings from left to right and top to bottom
@@ -345,11 +452,9 @@ namespace Jurassic_Jigsaw
                 //    break;
 
                 case FlipAxis.HORIZONTAL:
-                    int temp = Top;
-                    Top = Bottom;
-                    Bottom = temp;
-                    Left = InvertInt(Left);
-                    Right = InvertInt(Right);
+                    FlipImageHorizontally();
+                    //create all side strings from left to right and top to bottom
+                    RemakeSides();
                     break;
 
                 //case FlipAxis.CLOCKWISE:
@@ -361,11 +466,8 @@ namespace Jurassic_Jigsaw
                 //    break;
 
                 case FlipAxis.COUNTERCLOCKWISE:
-                    temp = Left;
-                    Left = InvertInt(Top);
-                    Top = Right;
-                    Right = InvertInt(Bottom);
-                    Bottom = temp;
+                    RotateImageCCW();
+                    RemakeSides();
                     break;
 
                 default:
@@ -373,15 +475,56 @@ namespace Jurassic_Jigsaw
             }
         }
 
-        private void RotateImageCCW()
+        private void RemakeSides()
         {
-            //TODO: Make CCW Image rotation
+            int y = Image.Length; //highest y index exclusive
+            int x = Image[1].Length; //highest x index exclusive
+            Size = y;
+            Top = TileSideToInt(Image[0]);
+            Bottom = TileSideToInt(Image[y - 1]);
+
+            StringBuilder leftString = new StringBuilder();
+            for (int i = 0; i < y; i++)
+            {
+                leftString.Append(Image[i][0]);
+            }
+            Left = TileSideToInt(leftString.ToString());
+
+            StringBuilder rightString = new StringBuilder();
+            for (int i = 0; i < y; i++)
+            {
+                rightString.Append(Image[i][x - 1]);
+            }
+            Right = TileSideToInt(rightString.ToString());
         }
 
         private void FlipImageHorizontally()
         {
-            //TODO: Make horizontal Image flip
+            int il = Image.Length - 1;
+            for (int i = 0; i < Image.Length / 2; i++)
+            {
+                var temp = (string)Image[i].Clone();
+                Image[i] = (string)Image[il - i].Clone();
+                Image[il - i] = temp;
+            }
         }
+
+        private void RotateImageCCW()
+        {
+            int il = Image.Length - 1;
+            var newImage = new string[il + 1];
+            for (int i = 0; i < Image.Length; i++)
+            {
+                StringBuilder sb = new StringBuilder();
+                for (int j = 0; j < Image.Length; j++)
+                {
+                    sb.Append(Image[j][il - i]);
+                }
+                newImage[i] = sb.ToString();
+            }
+            Image = newImage;
+        }
+
 
         private int TileSideToInt(string side)
         {
