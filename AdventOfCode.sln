@@ -47,7 +47,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Allergen Assessment", "Alle
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crab Combat", "Crab Combat\Crab Combat.csproj", "{C614A027-D946-439E-9CC9-44FD5EA73565}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crab Cups", "Crab Cups\Crab Cups.csproj", "{729F6B8E-76CF-4018-8D23-3A4395836037}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crab Cups", "Crab Cups\Crab Cups.csproj", "{729F6B8E-76CF-4018-8D23-3A4395836037}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lobby Layout", "Lobby Layout\Lobby Layout.csproj", "{52A67A90-E747-4F6D-B18B-50D1A84E8586}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -147,6 +149,10 @@ Global
 		{729F6B8E-76CF-4018-8D23-3A4395836037}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{729F6B8E-76CF-4018-8D23-3A4395836037}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{729F6B8E-76CF-4018-8D23-3A4395836037}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52A67A90-E747-4F6D-B18B-50D1A84E8586}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52A67A90-E747-4F6D-B18B-50D1A84E8586}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52A67A90-E747-4F6D-B18B-50D1A84E8586}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52A67A90-E747-4F6D-B18B-50D1A84E8586}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -33,9 +33,134 @@ namespace Monster_Messages
             }
             inputList.Add(subList);
             
+            //make mega regex v0v
 
+
+            //SolveWithReplacement(inputList);
 
             SolveWithRules(inputList);
+        }
+
+        private static void SolveWithReplacement(List<List<string>> inputList)
+        {
+
+
+            //make rules
+            var rules = new List<TextRule>();
+            foreach (var item in inputList[0])
+            {
+                var colonSplit = item.Split(':');
+                int num = int.Parse(colonSplit[0]);
+                rules.Add(new TextRule(num));
+            }
+
+            foreach (var item in inputList[0])
+            {
+                var colonSplit = item.Split(':');
+                int num = int.Parse(colonSplit[0].Trim());
+                TextRule r = rules.Find(n => n.Num == num);
+                var subrules = colonSplit[1].Trim().Split('|');
+                r.ReplacesA = $",{subrules[0].Trim(' ').Trim('"').Replace(' ', ',')},";
+
+                if (subrules.Length > 1)
+                {
+                    r.ReplacesB = $",{subrules[1].Trim(' ').Replace(' ', ',')},";
+                }
+
+                Console.WriteLine(r);
+            }
+
+            //string replace = "0,1,2,3,4,5,6,7,8,9";
+            //string replacer = "A";
+            //int lengthA = "3,4".Length;
+            //Console.WriteLine(replace);
+            ////Console.WriteLine($"replace[0..7] = {replace[0..7]}");
+            ////Console.WriteLine($"replace[8..] = {replace[8..]}");
+            ////Console.WriteLine($"replace[0..7] + \"a\" + replace[8..] = {replace[0..7] + replacer + replace[(7 + replacer.Length)..]}");
+
+            //for (int i = 0; i < replace.Length - lengthA; i++)
+            //{
+            //    if (replace.Substring(i, lengthA) == "3,4")
+            //    {
+            //        Console.WriteLine(replace[0..i] + replacer + replace[(i + lengthA)..]);
+            //    }
+            //}
+
+            StringBuilder sb = new StringBuilder(",");
+            foreach (var c in inputList[1][0])
+            {
+                if (c == 'a')
+                {
+                    sb.Append($"1,");
+                }
+                else
+                {
+                    sb.Append($"14,");
+                }
+            }
+            var possibilities = new HashSet<string> { sb.ToString() };
+
+
+
+            bool changes = true;
+            while (changes)
+            {
+                changes = false;
+                var newList = new HashSet<string>();
+                foreach (var rule in rules)
+                {
+                    foreach (var target in possibilities)
+                    {
+                        string replacer = $",{rule.Num},";
+
+                        int lengthA = rule.ReplacesA.Length;
+                        for (int i = 0; i < target.Length - lengthA; i++)
+                        {
+                            if (target.Substring(i, lengthA) == rule.ReplacesA)
+                            {
+                                newList.Add(target[0..i] + replacer + target[(i + lengthA)..]);
+                            }
+                        }
+
+                        if (rule.ReplacesB != string.Empty)
+                        {
+                            int lengthB = rule.ReplacesB.Length;
+                            for (int i = 0; i < target.Length - lengthB; i++)
+                            {
+                                if (target.Substring(i, lengthB) == rule.ReplacesB)
+                                {
+                                    newList.Add(target[0..i] + replacer + target[(i + lengthB)..]);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //check if there's a ,0, in newList, if true. break;
+                bool end = false;
+                foreach (var item in newList)
+                {
+                    if (item == ",0,")
+                    {
+                        end = true;
+                        break;
+                    }
+                }
+                if (end)
+                {
+                    //return true
+                    Console.WriteLine("found ,0,");
+                    break;
+                }
+                possibilities = new HashSet<string>(newList);
+                newList.Clear();
+                changes = true;
+            }
+
+            foreach (var item in possibilities)
+            {
+                Console.WriteLine(item);
+            }
         }
 
         private static void SolveWithRules(List<List<string>> inputList)
@@ -136,12 +261,6 @@ namespace Monster_Messages
 
         public bool Match(string sIn, out string sOut)
         {
-            int depth = 30 - sIn.Length;
-            string dent = "";
-            for (int i = 0; i < depth; i++)
-            {
-                dent += " ";
-            }
             string sA = (string)sIn.Clone();
             string sB = (string)sIn.Clone();
             sOut = sIn;
@@ -153,7 +272,6 @@ namespace Monster_Messages
 
             if (Letter != null)
             {
-                //Console.WriteLine($" in: {Num,2}.{Letter} => {sIn,30}");
                 if (sA.Length > 0)
                 {
                     match = Letter == sA[0].ToString();
@@ -162,12 +280,9 @@ namespace Monster_Messages
                         sOut = sA[1..];
                     }
                 }
-                //Console.WriteLine($"Matched {sA[0]} with {Letter} which is {match}, returned {sOut}");
-                //Console.WriteLine($" ret 0 {match}");
             }
             if (SubrulesA.Count > 0 && !match)
             {
-                //Console.WriteLine($" in: {Num,2}.A => {sIn,30}");
                 foreach (var subrule in SubrulesA)
                 {
                     match = subrule.Match(sA, out string sAOut);
@@ -180,12 +295,10 @@ namespace Monster_Messages
                 if (match)
                 {
                     sOut = sA;
-                    //Console.WriteLine($" ret 1 {match}");
                 }
             }
             if (SubrulesB.Count > 0 && !match)
             {
-                //Console.WriteLine($" in: {Num,2}.B => {sIn,30}");
                 foreach (var subrule in SubrulesB)
                 {
                     match = subrule.Match(sB, out string sBOut);
@@ -198,18 +311,9 @@ namespace Monster_Messages
                 if (match)
                 {
                     sOut = sB;
-                    //Console.WriteLine($" ret 2 {match}");
                 }
             }
 
-            //if (Letter != null)
-            //{
-            //    Console.WriteLine($"out: {Letter,2} => {sOut,30} => {match}");
-            //}
-            //else
-            //{
-            //    Console.WriteLine($"out: {Num,2} => {sOut,30} => {match}");
-            //}
             return match;
         }
 
@@ -235,6 +339,23 @@ namespace Monster_Messages
                 sb.Remove(sb.Length - 1, 1);
             }
             return sb.ToString();
+        }
+    }
+
+    public class TextRule
+    {
+        public int Num { get; set; }
+        public string ReplacesA { get; set; } = string.Empty;
+        public string ReplacesB { get; set; } = string.Empty;
+
+        public TextRule(int num)
+        {
+            Num = num;
+        }
+
+        public override string ToString()
+        {
+            return $"{Num} replaces {ReplacesA} {(ReplacesB != string.Empty? $"| {ReplacesB}" : "")}";
         }
     }
 }
