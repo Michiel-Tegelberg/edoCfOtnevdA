@@ -11,12 +11,12 @@ namespace Monster_Messages
         static void Main(string[] args)
         {
             var inputList = new List<List<string>>();
-            StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Monster Messages\TextFile6.txt");
+            //StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Monster Messages\TextFile6.txt");
             //StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Monster Messages\TextFile5.txt");
             //StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Monster Messages\TextFile4.txt");
             //StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Monster Messages\TextFile3.txt");
             //StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Monster Messages\TextFile2.txt");
-            //StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Monster Messages\TextFile1.txt");
+            StreamReader sr = new StreamReader(@"C:\Users\eiedu\Source\Repos\AdventOfCode\Monster Messages\TextFile1.txt");
             string line = string.Empty;
             var subList = new List<string>();
             while ((line = sr.ReadLine()) != null)
@@ -359,3 +359,4 @@ namespace Monster_Messages
         }
     }
 }
+

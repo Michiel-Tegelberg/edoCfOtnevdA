@@ -49,7 +49,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crab Combat", "Crab Combat\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Crab Cups", "Crab Cups\Crab Cups.csproj", "{729F6B8E-76CF-4018-8D23-3A4395836037}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lobby Layout", "Lobby Layout\Lobby Layout.csproj", "{52A67A90-E747-4F6D-B18B-50D1A84E8586}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lobby Layout", "Lobby Layout\Lobby Layout.csproj", "{52A67A90-E747-4F6D-B18B-50D1A84E8586}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Combo Breaker", "Combo Breaker\Combo Breaker.csproj", "{D6E4E30F-FA93-45A3-8DAB-4D3B0FF005D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -153,6 +155,10 @@ Global
 		{52A67A90-E747-4F6D-B18B-50D1A84E8586}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52A67A90-E747-4F6D-B18B-50D1A84E8586}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52A67A90-E747-4F6D-B18B-50D1A84E8586}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6E4E30F-FA93-45A3-8DAB-4D3B0FF005D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6E4E30F-FA93-45A3-8DAB-4D3B0FF005D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6E4E30F-FA93-45A3-8DAB-4D3B0FF005D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6E4E30F-FA93-45A3-8DAB-4D3B0FF005D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
